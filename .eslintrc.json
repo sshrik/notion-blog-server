@@ -1,0 +1,81 @@
+{
+  "env": {
+    "browser": true
+  },
+  "plugins": ["@typescript-eslint", "prettier"],
+  "extends": [
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended",
+    "airbnb-base"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "rules": {
+    "comma-dangle": "off",
+    "no-use-before-define": "error",
+    "no-underscore-dangle": "off",
+    "no-unused-vars": "off",
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": [ "error" ],
+    "@typescript-eslint/no-unused-vars": ["error"],
+    "@typescript-eslint/no-unnecessary-type-constraint": "off",
+    "import/order": [
+      "error",
+      {
+        "pathGroups": [
+          {
+            "pattern": "./**",
+            "group": "object"
+          },
+          {
+            "pattern": "react",
+            "group": "builtin",
+            "position": "before"
+          }
+        ],
+        "groups": ["builtin", "external", "parent", "sibling", "index", "type"],
+        "newlines-between": "never",
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        }
+      }
+    ],
+    "camelcase": "off",
+    "import/prefer-default-export": "off",
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "js": "never",
+        "ts": "never"
+      }
+    ],
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": ["..*"]
+      }
+    ],
+    "no-restricted-syntax": [
+      "error",
+      {
+        "selector": "ImportNamespaceSpecifier",
+        "message": "import * 은 사용할 수 없습니다."
+      },
+      {
+        "selector": "ExportAllDeclaration",
+        "message": "export * 은 사용할 수 없습니다."
+      }
+    ]
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"],
+        "moduleDirectory": ["node_modules", "@types"]
+      },
+      "typescript": {}
+    }
+  }
+}
