@@ -17,8 +17,12 @@ export function generateDefaultBlock(): NotionBlockObject {
 
 export function generateListBlock(defaultValue: NotionBlockObject) {
   return {
-    ...defaultValue,
     object: 'list',
+    id: defaultValue.id,
+    created_time: defaultValue.created_time,
+    last_edited_time: defaultValue.last_edited_time,
+    has_children: defaultValue.has_children,
+    archived: defaultValue.archived,
     type: 'block_list',
     block_list: [] as NotionBlockObject[],
   };
