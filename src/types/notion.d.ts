@@ -33,13 +33,9 @@ import {
   CodeBlockObject,
   FileObject,
   EmojiObject,
-} from './notionBaseBlock.d';
-import { BlockType, ObjectType } from './notionBaseType.d';
-
-type PickOne<T> = {
-  [P in keyof T]: Record<P, T[P]> &
-    Partial<Record<Exclude<keyof T, P>, undefined>>;
-}[keyof T];
+} from 'src/types/notionBaseBlock.d';
+import { ObjectType } from 'src/types/notionBaseType.d';
+import { PickOneWithType } from 'src/types/utils.d';
 
 type BaseObject = {
   object: ObjectType;
@@ -48,7 +44,6 @@ type BaseObject = {
   last_edited_time: string; // ISO 8601 date time string
   last_edited_by: string;
   has_children: boolean;
-  type: BlockType;
   archived: boolean;
 };
 
@@ -117,7 +112,7 @@ export type BlockObjectType =
   | UnsupportedBlockObject;
 
 export type NotionBlockObject =
-  | (BaseObject & PickOne<NotionBlockVariants>)
+  | (BaseObject & PickOneWithType<NotionBlockVariants>)
   | {
       object: 'list';
       id: string;

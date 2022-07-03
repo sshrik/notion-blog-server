@@ -1,5 +1,10 @@
-import { NotionBlockObject } from './notion.d';
-import { RichTextType, ColorType, CodeLanguageType } from './notionBaseType.d';
+import { NotionBlockObject } from 'src/types/notion.d';
+import {
+  RichTextType,
+  ColorType,
+  CodeLanguageType,
+} from 'src/types/notionBaseType.d';
+import { PickOneWithType } from 'src/types/utils';
 
 type Annotation = {
   bold: boolean;
@@ -27,20 +32,14 @@ export type MentionType = {
   type: 'user' | 'page' | 'database' | 'date' | 'link_preview';
 };
 
-type PickOne<T> = {
-  [P in keyof T]: Record<P, T[P]> &
-    Partial<Record<Exclude<keyof T, P>, undefined>>;
-}[keyof T];
-
 type FileObjetVariant = {
   external: { url: string };
   file: { url: string };
 };
 
 export type FileObject = {
-  type: 'external' | 'file';
   expiry_time?: string; // ISO 8601 date time string
-} & PickOne<FileObjetVariant>;
+} & PickOneWithType<FileObjetVariant>;
 
 export type EmojiObject = {
   type: 'emoji';
