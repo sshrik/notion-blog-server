@@ -8,5 +8,5 @@ export function wait(ms: number) {
 }
 
 export function waitBlock() {
-  wait(Number(process.env.QUERT_INTERVAL) ?? 400);
+  wait(Number(process.env.QUERY_INTERVAL) ?? 400);
 }

@@ -27,11 +27,20 @@ export type MentionType = {
   type: 'user' | 'page' | 'database' | 'date' | 'link_preview';
 };
 
+type PickOne<T> = {
+  [P in keyof T]: Record<P, T[P]> &
+    Partial<Record<Exclude<keyof T, P>, undefined>>;
+}[keyof T];
+
+type FileObjetVariant = {
+  external: { url: string };
+  file: { url: string };
+};
+
 export type FileObject = {
   type: 'external' | 'file';
-  url: string;
   expiry_time?: string; // ISO 8601 date time string
-};
+} & PickOne<FileObjetVariant>;
 
 export type EmojiObject = {
   type: 'emoji';

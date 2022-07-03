@@ -31,6 +31,8 @@ import {
   ColumnValueBlockObject,
   BreadcrumbBlockObject,
   CodeBlockObject,
+  FileObject,
+  EmojiObject,
 } from './notionBaseBlock.d';
 import { BlockType, ObjectType } from './notionBaseType.d';
 
@@ -44,6 +46,7 @@ type BaseObject = {
   id: string;
   created_time: string; // ISO 8601 date time string
   last_edited_time: string; // ISO 8601 date time string
+  last_edited_by: string;
   has_children: boolean;
   type: BlockType;
   archived: boolean;
@@ -120,11 +123,30 @@ export type NotionBlockObject =
       id: string;
       created_time: string; // ISO 8601 date time string
       last_edited_time: string; // ISO 8601 date time string
+      last_edited_by: string;
       has_children: boolean;
       type: 'block_list';
       archived: boolean;
       block_list: NotionBlockObject[];
     };
+
+export type NotionPageObject = {
+  object: 'page';
+  id: string;
+  created_time: string; // ISO 8601 date time string
+  last_edited_time: string; // ISO 8601 date time string
+  last_edited_by: string;
+  archived: boolean;
+  icon: FileObject | EmojiObject;
+  cover: FileObject;
+  properties: {
+    title: {
+      title: unknown[];
+    };
+  };
+  parent: unknown;
+  url: string;
+};
 
 export type NotionBlockChildObject = {
   object: ObjectType;

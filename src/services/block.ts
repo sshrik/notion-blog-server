@@ -1,5 +1,5 @@
 import { Client } from '@notionhq/client';
-import { NotionBlockChildObject, NotionBlockObject } from 'src/types/notion';
+import { NotionBlockChildObject, NotionPageObject } from 'src/types/notion';
 
 export async function retrievePage(pageId: string) {
   const NOTION_SECRET_KEY = process.env.NOTION_SECRET_KEY ?? '';
@@ -9,7 +9,7 @@ export async function retrievePage(pageId: string) {
     page_id: pageId,
   });
 
-  return response as unknown as NotionBlockObject;
+  return response as unknown as NotionPageObject;
 }
 
 export async function retrieveBlockChild(blockId: string) {

@@ -5,9 +5,10 @@ import ErrorMapper from 'src/errors/ErrorMapper';
 import { RetrieveBlockParams, RetrievePageParams } from 'src/models/block';
 import { BaseResponse } from 'src/models/response';
 import { retrieveBlockChild, retrievePage } from 'src/services/block';
+import { BlogFolder, BlogMain, IconType } from 'src/types/blog';
 import { NotionBlockChildObject, NotionBlockObject } from 'src/types/notion';
 import { generateListBlock } from 'src/utils/block';
-import { waitBlock } from 'src/utils/wait';
+import { wait, waitBlock } from 'src/utils/wait';
 
 export async function retrieveBlockController(
   req: Request<RetrieveBlockParams, undefined>,
@@ -43,8 +44,6 @@ async function retrieveBlockRecursive(parent: NotionBlockObject) {
     }
   }
 
-  // eslint-disable-next-line no-console
-  console.log(result);
   return result as NotionBlockObject;
 }
 
@@ -68,21 +67,70 @@ export async function retrievePageController(
 
     res.send({ message: 'ok', data: results });
   } catch {
-    throw new ErrorMapper('ERR_AUTH', '인증되지 않은 사용자입니다.', 401);
+    throw new ErrorMapper('ERR_SERVER', '서버 실패', 500);
   }
 }
 
 export async function getPageMetadataController(
   req: Request<RetrievePageParams, undefined>,
-  res: Response<BaseResponse<NotionBlockObject>>
+  res: Response<BaseResponse<BlogMain>>
 ) {
   const { id } = req.params;
 
   try {
-    const result = await retrievePage(id);
+    const metadata = await retrievePage(id);
+    const { icon, cover } = metadata;
 
-    res.send({ message: 'ok', data: result });
+    wait(Number(process.env.QUERY_INTERVAL));
+
+    let iconImageLink = '';
+    let iconType: IconType = 'url';
+
+    let coverImageLink = '';
+
+    if (icon.type === 'external') {
+      iconType = 'url';
+      iconImageLink = icon.external?.url ?? '';
+    } else if (icon.type === 'file') {
+      iconType = 'url';
+      iconImageLink = icon.file?.url ?? '';
+    } else if (icon.type === 'emoji') {
+      iconType = 'string';
+      iconImageLink = icon.emoji;
+    }
+
+    if (cover.type === 'external') {
+      coverImageLink = cover.external?.url ?? '';
+    } else if (cover.type === 'file') {
+      coverImageLink = cover.file?.url ?? '';
+    }
+
+    const { results } = await retrieveBlockChild(id);
+
+    // result 에서 BlogMain type을 만들 수 있도록만 저장하면 됨.
+
+    const blogFolders: BlogFolder[] = [];
+
+    results.forEach((item) => {
+      if (item.type === 'child_database') {
+        blogFolders.push({
+          blogFolderName: item.child_database?.title ?? '',
+          blogFeeds: [],
+        });
+      }
+    });
+
+    res.send({
+      message: 'ok',
+      data: {
+        coverImageLink,
+        iconImageLink,
+        iconType,
+        blogTitle: 'GUIGO-BLOG',
+        blogFolders,
+      },
+    });
   } catch {
-    throw new ErrorMapper('ERR_AUTH', '인증되지 않은 사용자입니다.', 401);
+    throw new ErrorMapper('ERR_SERVER', '서버 실패', 500);
   }
 }

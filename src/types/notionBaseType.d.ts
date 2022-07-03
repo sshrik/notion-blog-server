@@ -29,7 +29,7 @@ export type BlockType =
   | 'link_to_page'
   | 'unsupported';
 
-export type ObjectType = 'block' | 'list';
+export type ObjectType = 'block' | 'list' | 'page';
 
 export type RichTextType = 'text' | 'mention' | 'equation';
 
