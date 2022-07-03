@@ -4,8 +4,8 @@ import { writePage } from 'src/database/block';
 import ErrorMapper from 'src/errors/ErrorMapper';
 import { RetrieveBlockParams, RetrievePageParams } from 'src/models/block';
 import { BaseResponse } from 'src/models/response';
-import { retrieveBlockChild, retrievePage } from 'src/services/block';
-import { BlogFolder, BlogMain, IconType } from 'src/types/blog';
+import { retrieveBlockChild, retrievePageMetadata } from 'src/services/block';
+import { BlogFolder, BlogMain } from 'src/types/blog';
 import { NotionBlockChildObject, NotionBlockObject } from 'src/types/notion';
 import { generateListBlock } from 'src/utils/block';
 import { wait, waitBlock } from 'src/utils/wait';
@@ -78,32 +78,8 @@ export async function getPageMetadataController(
   const { id } = req.params;
 
   try {
-    const metadata = await retrievePage(id);
-    const { icon, cover } = metadata;
-
+    const metadata = await retrievePageMetadata(id);
     wait(Number(process.env.QUERY_INTERVAL));
-
-    let iconImageLink = '';
-    let iconType: IconType = 'url';
-
-    let coverImageLink = '';
-
-    if (icon.type === 'external') {
-      iconType = 'url';
-      iconImageLink = icon.external?.url ?? '';
-    } else if (icon.type === 'file') {
-      iconType = 'url';
-      iconImageLink = icon.file?.url ?? '';
-    } else if (icon.type === 'emoji') {
-      iconType = 'string';
-      iconImageLink = icon.emoji;
-    }
-
-    if (cover.type === 'external') {
-      coverImageLink = cover.external?.url ?? '';
-    } else if (cover.type === 'file') {
-      coverImageLink = cover.file?.url ?? '';
-    }
 
     const { results } = await retrieveBlockChild(id);
 
@@ -123,10 +99,7 @@ export async function getPageMetadataController(
     res.send({
       message: 'ok',
       data: {
-        coverImageLink,
-        iconImageLink,
-        iconType,
-        blogTitle: 'GUIGO-BLOG',
+        ...metadata,
         blogFolders,
       },
     });

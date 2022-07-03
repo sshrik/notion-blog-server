@@ -56,6 +56,8 @@ type TextWithChildType = OnlyTextType & {
 
 type Empty = Record<string, never>;
 
+export type BaseTextType = RichText[];
+
 export type ParagraphBlockObject = TextWithChildType;
 
 export type HeadingOneBlockObject = OnlyTextType;

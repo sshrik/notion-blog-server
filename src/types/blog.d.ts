@@ -1,3 +1,4 @@
+import { BaseTextType } from 'src/types/notionBaseBlock';
 import { ColorType } from 'src/types/notionBaseType.d';
 
 export type Tag = { color: ColorType; label: string };
@@ -21,6 +22,6 @@ export type BlogMain = {
   coverImageLink: string;
   iconImageLink: string;
   iconType: IconType;
-  blogTitle: string;
+  blogTitle: BaseTextType;
   blogFolders: BlogFolder[];
 };

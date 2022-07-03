@@ -33,6 +33,7 @@ import {
   CodeBlockObject,
   FileObject,
   EmojiObject,
+  BaseTextType,
 } from 'src/types/notionBaseBlock.d';
 import { ObjectType } from 'src/types/notionBaseType.d';
 import { PickOneWithType } from 'src/types/utils.d';
@@ -125,6 +126,28 @@ export type NotionBlockObject =
       block_list: NotionBlockObject[];
     };
 
+type NotionPageTitleProperty = {
+  title: {
+    id: 'title';
+    type: 'title';
+    title: BaseTextType;
+  };
+};
+
+export type NotionParentAndProperty =
+  | {
+      parent: { type: 'database_id'; database_id: { database_id: string } };
+      properties: { database: unknown };
+    }
+  | {
+      parent: { type: 'page_id'; page_id: { page_id: string } };
+      properties: NotionPageTitleProperty;
+    }
+  | {
+      parent: { type: 'workspace'; workspace: { workspace: boolean } };
+      properties: NotionPageTitleProperty;
+    };
+
 export type NotionPageObject = {
   object: 'page';
   id: string;
@@ -134,14 +157,8 @@ export type NotionPageObject = {
   archived: boolean;
   icon: FileObject | EmojiObject;
   cover: FileObject;
-  properties: {
-    title: {
-      title: unknown[];
-    };
-  };
-  parent: unknown;
   url: string;
-};
+} & NotionParentAndProperty;
 
 export type NotionBlockChildObject = {
   object: ObjectType;
